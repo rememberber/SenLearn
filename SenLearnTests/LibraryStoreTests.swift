@@ -201,6 +201,54 @@ final class LibraryStoreTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: root), Data("a file, not a directory".utf8))
     }
 
+    func testReplacingPageImageResetsOCRAndPreservesBookAndOriginalSource() throws {
+        let root = temporaryRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = LibraryStore(rootDirectory: root)
+        var material = sampleMaterial(pageCount: 2)
+        material.originalData = Data("original PDF".utf8)
+        material.originalExtension = "pdf"
+        let id = try store.importMaterial(material)
+        try store.setReadingPosition(bookID: id, index: 1)
+        var page = try XCTUnwrap(store.book(id: id)?.pages[1])
+        page.lines = [RecognizedLine(text: "Old", bounds: NormalizedRect(x: 0, y: 0, width: 1, height: 1), words: [])]
+        page.recognitionState = .ready
+        try store.updatePage(page, in: id)
+        let before = try XCTUnwrap(store.book(id: id))
+        let oldURL = store.imageURL(for: page)
+        let replacement = ImportedPage(imageData: Data("new image".utf8), pixelWidth: 200, pixelHeight: 100)
+        try store.replacePageImage(replacement, for: page, in: id)
+        let after = try XCTUnwrap(store.book(id: id))
+        XCTAssertEqual(after.currentPageIndex, 1)
+        XCTAssertEqual(after.pages[0], before.pages[0])
+        XCTAssertEqual(after.sourceFilenames, before.sourceFilenames)
+        XCTAssertEqual(after.pages[1].id, page.id)
+        XCTAssertEqual(after.pages[1].pixelWidth, 200)
+        XCTAssertEqual(after.pages[1].recognitionState, .pending)
+        XCTAssertTrue(after.pages[1].lines.isEmpty)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: oldURL.path))
+        XCTAssertEqual(try Data(contentsOf: store.imageURL(for: after.pages[1])), replacement.imageData)
+        XCTAssertEqual(LibraryStore(rootDirectory: root).book(id: id), after)
+        XCTAssertThrowsError(try store.replacePageImage(replacement, for: page, in: id), "A stale editor must not overwrite the new image.")
+        XCTAssertEqual(store.book(id: id), after)
+    }
+
+    func testFailedPageReplacementKeepsOriginalImageAndMetadata() throws {
+        let root = temporaryRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = LibraryStore(rootDirectory: root)
+        let material = sampleMaterial()
+        let id = try store.importMaterial(material)
+        let before = try XCTUnwrap(store.book(id: id))
+        let page = before.pages[0]
+        try executeSQL("CREATE TRIGGER reject_update BEFORE UPDATE ON books BEGIN SELECT RAISE(ABORT, 'test update failure'); END;", root: root)
+        XCTAssertThrowsError(try store.replacePageImage(material.pages[0], for: page, in: id))
+        XCTAssertEqual(store.book(id: id), before)
+        XCTAssertEqual(try Data(contentsOf: store.imageURL(for: page)), material.pages[0].imageData)
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: root.appendingPathComponent("Images").path).count, 1)
+        XCTAssertEqual(LibraryStore(rootDirectory: root).book(id: id), before)
+    }
+
     private func temporaryRoot() -> URL {
         FileManager.default.temporaryDirectory.appendingPathComponent("SenLearnTests-\(UUID().uuidString)", isDirectory: false)
     }

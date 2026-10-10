@@ -122,6 +122,32 @@ final class LibraryStore: ObservableObject {
         }
     }
 
+    /// Writes a new image before committing metadata; the old page survives any failure.
+    func replacePageImage(_ replacement: ImportedPage, for expectedPage: BookPage, in bookID: UUID) throws {
+        try recordingErrors {
+            try requireAvailable()
+            guard var updatedBook = book(id: bookID) else { throw StoreError.bookNotFound }
+            guard let index = updatedBook.pages.firstIndex(where: { $0.id == expectedPage.id }),
+                  updatedBook.pages[index] == expectedPage else { throw StoreError.pageChanged }
+            guard !replacement.imageData.isEmpty, replacement.pixelWidth > 0, replacement.pixelHeight > 0 else {
+                throw StoreError.invalidImage
+            }
+            let filename = "\(UUID().uuidString).\(imageExtension(for: replacement.imageData))"
+            let url = imagesDirectory.appendingPathComponent(filename)
+            updatedBook.pages[index] = BookPage(id: expectedPage.id, imageFilename: filename,
+                                               pixelWidth: replacement.pixelWidth, pixelHeight: replacement.pixelHeight)
+            do {
+                try replacement.imageData.write(to: url, options: .atomic)
+                try saveBook(updatedBook)
+            } catch {
+                try? FileManager.default.removeItem(at: url)
+                throw error
+            }
+            publish(updatedBook)
+            try? FileManager.default.removeItem(at: imageURL(for: expectedPage))
+        }
+    }
+
     func setReadingPosition(bookID: UUID, index: Int) throws {
         try recordingErrors {
             try requireAvailable()
@@ -339,7 +365,7 @@ final class LibraryStore: ObservableObject {
 
     private enum StoreError: LocalizedError {
         case unavailable, noPages, invalidImage, bookNotFound, pageNotFound, invalidPageIndex
-        case emptyTitle, invalidBounds, invalidStoredData
+        case emptyTitle, invalidBounds, invalidStoredData, pageChanged
         case database(String)
 
         var errorDescription: String? {
@@ -348,6 +374,7 @@ final class LibraryStore: ObservableObject {
             case .noPages: "没有可导入的页面。"
             case .invalidImage: "页面图片或尺寸无效。"
             case .bookNotFound: "没有找到这本书。"
+            case .pageChanged: "书页已更新，请关闭后重新打开旋转工具。"
             case .pageNotFound: "没有找到这个页面。"
             case .invalidPageIndex: "阅读页码超出了书本范围。"
             case .emptyTitle: "书名不能为空。"

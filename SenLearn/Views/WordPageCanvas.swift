@@ -18,7 +18,8 @@ struct WordPageCanvas: UIViewRepresentable {
         view.surface.selectedID = selectedID
         view.surface.selectionColor = color
         view.reduceMotion = reduceMotion
-        if view.pageID != page.id {
+        if view.pageID != page.id || view.imageURL != imageURL {
+            view.imageURL = imageURL
             view.pageID = page.id
             view.surface.image = UIImage(contentsOfFile: imageURL.path)
             view.pageSize = CGSize(width: page.pixelWidth, height: page.pixelHeight)
@@ -33,6 +34,7 @@ struct WordPageCanvas: UIViewRepresentable {
 final class PageScrollView: UIScrollView, UIScrollViewDelegate {
     let surface = PageSurface()
     var pageID: UUID?
+    var imageURL: URL?
     var pageSize: CGSize = .zero
     var needsFit = true
     var reduceMotion = false

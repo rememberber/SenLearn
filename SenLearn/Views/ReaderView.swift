@@ -14,6 +14,7 @@ struct ReaderView: View {
     @State private var recognizing = false
     @State private var recognitionGeneration = UUID()
     @State private var showingCorrections = false
+    @State private var rotatingPage: BookPage?
     @State private var showingText = false
     @State private var confirmingRetry = false
     @Environment(\.scenePhase) private var scenePhase
@@ -61,8 +62,8 @@ struct ReaderView: View {
             }
         }
         .foregroundStyle(theme.ink)
-        .task(id: page?.id) { await recognizeCurrentPage() }
-        .onChange(of: page?.id) { _, _ in
+        .task(id: page?.imageFilename) { await recognizeCurrentPage() }
+        .onChange(of: page?.imageFilename) { _, _ in
             speech.stop(); selectedID = nil; candidates = []; lastSpokenText = ""
         }
         .onChange(of: scenePhase) { _, phase in if phase != .active { speech.stop() } }
@@ -75,6 +76,11 @@ struct ReaderView: View {
                     return true
                 } catch { library.errorMessage = error.localizedDescription; return false }
             } }
+        }
+        .sheet(item: $rotatingPage) { original in
+            PageRotationView(imageURL: library.imageURL(for: original), theme: theme) { replacement in
+                try library.replacePageImage(replacement, for: original, in: bookID)
+            }
         }
         .sheet(isPresented: $showingText) { textSheet }
         .alert("重新识别这一页？", isPresented: $confirmingRetry) {
@@ -110,6 +116,8 @@ struct ReaderView: View {
                 Button("文字列表", systemImage: "text.alignleft") { showingText = true }
                     .disabled(page?.lines.isEmpty != false)
                 Button(appearance.parentPanel ? "收起页目录" : "显示页目录", systemImage: "sidebar.left") { appearance.parentPanel.toggle() }
+                Button("旋转书页", systemImage: "rotate.right") { speech.stop(); rotatingPage = page }
+                    .disabled(recognizing || page == nil).accessibilityIdentifier("reader.rotate")
                 Button("重新识别本页", systemImage: "arrow.clockwise") { confirmingRetry = true }.disabled(recognizing)
             } label: {
                 Image(systemName: "ellipsis").font(.title3).frame(width: 44, height: 48).contentShape(Rectangle())

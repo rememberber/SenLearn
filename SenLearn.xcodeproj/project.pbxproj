@@ -1,72 +1,457 @@
 // !$*UTF8*$!
-{ archiveVersion = 1; classes = {}; objectVersion = 77;
-objects = {
-A81E7C7ECD9FFB8299348812 = { isa = PBXFileSystemSynchronizedRootGroup; path = SenLearn; sourceTree = "<group>"; };
-65830ADE689123AA7D7B968A = { isa = PBXFileReference; explicitFileType = wrapper.application; path = SenLearn.app; sourceTree = BUILT_PRODUCTS_DIR; };
-A07377F890A6ABFE307914D3 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-A3E210ABCA3E11DAE29CA165 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-06CD4435E127D8BB80B7D785 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-0525C1FAC78E35B99F2B74E2 = { isa = XCBuildConfiguration; name = Debug; buildSettings = { CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
-        SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2";
-        SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
-        PRODUCT_NAME = "$(TARGET_NAME)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.app;INFOPLIST_FILE = Config/Info.plist; GENERATE_INFOPLIST_FILE = NO; OTHER_LDFLAGS = "$(inherited) -lsqlite3"; }; };
-41FFE7F5ED97A08E6B9E53D6 = { isa = XCBuildConfiguration; name = Release; buildSettings = { CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
-        SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2";
-        SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
-        PRODUCT_NAME = "$(TARGET_NAME)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.app;INFOPLIST_FILE = Config/Info.plist; GENERATE_INFOPLIST_FILE = NO; OTHER_LDFLAGS = "$(inherited) -lsqlite3"; }; };
-8F9C1091CD2CE7BB2E79AB15 = { isa = XCConfigurationList; buildConfigurations = (0525C1FAC78E35B99F2B74E2, 41FFE7F5ED97A08E6B9E53D6,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-FE3909405F21CDB0688EFCC3 = { isa = PBXNativeTarget; name = SenLearn; productName = SenLearn; productReference = 65830ADE689123AA7D7B968A;
-    productType = "com.apple.product-type.application"; buildConfigurationList = 8F9C1091CD2CE7BB2E79AB15;
-    buildPhases = (A07377F890A6ABFE307914D3, A3E210ABCA3E11DAE29CA165, 06CD4435E127D8BB80B7D785,);
-    buildRules = (); dependencies = (); fileSystemSynchronizedGroups = (A81E7C7ECD9FFB8299348812,); };
-BDD40CCD061EF8930D9EAAAB = { isa = PBXFileSystemSynchronizedRootGroup; path = SenLearnTests; sourceTree = "<group>"; };
-8199FB39CF20B271C71FA75A = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SenLearnTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-29CA61FD58C891E164F5581B = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-9407216D9A6EB9E2F8058527 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-82C09A007E0C3C2A5DD9081B = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-0D74AD2BF10D823329764523 = { isa = PBXContainerItemProxy; containerPortal = F6F4DA8D93E88A08220E03B7; proxyType = 1; remoteGlobalIDString = FE3909405F21CDB0688EFCC3; remoteInfo = SenLearn; };
-8CD9D3B858B0588C832D92C5 = { isa = PBXTargetDependency; target = FE3909405F21CDB0688EFCC3; targetProxy = 0D74AD2BF10D823329764523; };
-9F62A01AE09B28FF159B7192 = { isa = XCBuildConfiguration; name = Debug; buildSettings = { CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
-        SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2";
-        SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
-        PRODUCT_NAME = "$(TARGET_NAME)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearntests;GENERATE_INFOPLIST_FILE = YES;TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SenLearn.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SenLearn"; BUNDLE_LOADER = "$(TEST_HOST)"; }; };
-8127AEE8EF37617597AEB7BA = { isa = XCBuildConfiguration; name = Release; buildSettings = { CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
-        SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2";
-        SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
-        PRODUCT_NAME = "$(TARGET_NAME)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearntests;GENERATE_INFOPLIST_FILE = YES;TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SenLearn.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SenLearn"; BUNDLE_LOADER = "$(TEST_HOST)"; }; };
-173FBE8859E86512D4B56BB7 = { isa = XCConfigurationList; buildConfigurations = (9F62A01AE09B28FF159B7192, 8127AEE8EF37617597AEB7BA,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-702E22629503832E6886A939 = { isa = PBXNativeTarget; name = SenLearnTests; productName = SenLearnTests; productReference = 8199FB39CF20B271C71FA75A;
-    productType = "com.apple.product-type.bundle.unit-test"; buildConfigurationList = 173FBE8859E86512D4B56BB7;
-    buildPhases = (29CA61FD58C891E164F5581B, 9407216D9A6EB9E2F8058527, 82C09A007E0C3C2A5DD9081B,);
-    buildRules = (); dependencies = (8CD9D3B858B0588C832D92C5,); fileSystemSynchronizedGroups = (BDD40CCD061EF8930D9EAAAB,); };
-8E51681CFABF34224A13518E = { isa = PBXFileSystemSynchronizedRootGroup; path = SenLearnUITests; sourceTree = "<group>"; };
-E1F2521D281C39CC6888B910 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SenLearnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-199DC0875BB236C38653571C = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-2CB4BB408F3A5342EFA44E9B = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-07CC97159A3FDF1F384800F7 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-A8463BD001128F17BFBB944B = { isa = PBXContainerItemProxy; containerPortal = F6F4DA8D93E88A08220E03B7; proxyType = 1; remoteGlobalIDString = FE3909405F21CDB0688EFCC3; remoteInfo = SenLearn; };
-A59F1C9081C8BD45CCE8B08F = { isa = PBXTargetDependency; target = FE3909405F21CDB0688EFCC3; targetProxy = A8463BD001128F17BFBB944B; };
-10D3938B7F26E844CA814C15 = { isa = XCBuildConfiguration; name = Debug; buildSettings = { CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
-        SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2";
-        SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
-        PRODUCT_NAME = "$(TARGET_NAME)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearnuitests;GENERATE_INFOPLIST_FILE = YES;TEST_TARGET_NAME = SenLearn; }; };
-C868727C194DBF3A853054C8 = { isa = XCBuildConfiguration; name = Release; buildSettings = { CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
-        SWIFT_VERSION = 5.0; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2";
-        SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
-        PRODUCT_NAME = "$(TARGET_NAME)"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearnuitests;GENERATE_INFOPLIST_FILE = YES;TEST_TARGET_NAME = SenLearn; }; };
-42DEFD3532D3EA64B0F1C2A0 = { isa = XCConfigurationList; buildConfigurations = (10D3938B7F26E844CA814C15, C868727C194DBF3A853054C8,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-73A278A725F29B799EC7400B = { isa = PBXNativeTarget; name = SenLearnUITests; productName = SenLearnUITests; productReference = E1F2521D281C39CC6888B910;
-    productType = "com.apple.product-type.bundle.ui-testing"; buildConfigurationList = 42DEFD3532D3EA64B0F1C2A0;
-    buildPhases = (199DC0875BB236C38653571C, 2CB4BB408F3A5342EFA44E9B, 07CC97159A3FDF1F384800F7,);
-    buildRules = (); dependencies = (A59F1C9081C8BD45CCE8B08F,); fileSystemSynchronizedGroups = (8E51681CFABF34224A13518E,); };
-FE0A091FDBFB3E9C31B7A1BD = { isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (65830ADE689123AA7D7B968A, 8199FB39CF20B271C71FA75A, E1F2521D281C39CC6888B910,); };
-2EB2D8158FC6EF9EB19CB439 = { isa = PBXGroup; sourceTree = "<group>"; children = (A81E7C7ECD9FFB8299348812, BDD40CCD061EF8930D9EAAAB, 8E51681CFABF34224A13518E, FE0A091FDBFB3E9C31B7A1BD,); };
-BFD315016DE16320F7E2120C = { isa = XCBuildConfiguration; name = Debug; buildSettings = { SDKROOT = iphoneos; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; ENABLE_USER_SCRIPT_SANDBOXING = YES;GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR; GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)"; ENABLE_TESTABILITY = YES; ONLY_ACTIVE_ARCH = YES; DEBUG_INFORMATION_FORMAT = dwarf; }; };
-1D8C0C6B1D22EA8C7669B263 = { isa = XCBuildConfiguration; name = Release; buildSettings = { SDKROOT = iphoneos; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; ENABLE_USER_SCRIPT_SANDBOXING = YES;GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR; GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; VALIDATE_PRODUCT = YES; }; };
-5D7731714D3E69D68AA8D7ED = { isa = XCConfigurationList; buildConfigurations = (BFD315016DE16320F7E2120C, 1D8C0C6B1D22EA8C7669B263,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-F6F4DA8D93E88A08220E03B7 = { isa = PBXProject; attributes = { BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 2700; };
-buildConfigurationList = 5D7731714D3E69D68AA8D7ED; compatibilityVersion = "Xcode 16.0"; developmentRegion = zh_CN;
-knownRegions = (en, zh_CN, Base); mainGroup = 2EB2D8158FC6EF9EB19CB439; productRefGroup = FE0A091FDBFB3E9C31B7A1BD;
-projectDirPath = ""; projectRoot = ""; targets = (FE3909405F21CDB0688EFCC3, 702E22629503832E6886A939, 73A278A725F29B799EC7400B,); };
-}; rootObject = F6F4DA8D93E88A08220E03B7;
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 71;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		0D74AD2BF10D823329764523 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F6F4DA8D93E88A08220E03B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FE3909405F21CDB0688EFCC3;
+			remoteInfo = SenLearn;
+		};
+		A8463BD001128F17BFBB944B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F6F4DA8D93E88A08220E03B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FE3909405F21CDB0688EFCC3;
+			remoteInfo = SenLearn;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		65830ADE689123AA7D7B968A /* SenLearn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = SenLearn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8199FB39CF20B271C71FA75A /* SenLearnTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SenLearnTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1F2521D281C39CC6888B910 /* SenLearnUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SenLearnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8E51681CFABF34224A13518E /* SenLearnUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SenLearnUITests; sourceTree = "<group>"; };
+		A81E7C7ECD9FFB8299348812 /* SenLearn */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SenLearn; sourceTree = "<group>"; };
+		BDD40CCD061EF8930D9EAAAB /* SenLearnTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SenLearnTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2CB4BB408F3A5342EFA44E9B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9407216D9A6EB9E2F8058527 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3E210ABCA3E11DAE29CA165 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2EB2D8158FC6EF9EB19CB439 = {
+			isa = PBXGroup;
+			children = (
+				A81E7C7ECD9FFB8299348812 /* SenLearn */,
+				BDD40CCD061EF8930D9EAAAB /* SenLearnTests */,
+				8E51681CFABF34224A13518E /* SenLearnUITests */,
+				FE0A091FDBFB3E9C31B7A1BD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FE0A091FDBFB3E9C31B7A1BD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				65830ADE689123AA7D7B968A /* SenLearn.app */,
+				8199FB39CF20B271C71FA75A /* SenLearnTests.xctest */,
+				E1F2521D281C39CC6888B910 /* SenLearnUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		702E22629503832E6886A939 /* SenLearnTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 173FBE8859E86512D4B56BB7 /* Build configuration list for PBXNativeTarget "SenLearnTests" */;
+			buildPhases = (
+				29CA61FD58C891E164F5581B /* Sources */,
+				9407216D9A6EB9E2F8058527 /* Frameworks */,
+				82C09A007E0C3C2A5DD9081B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8CD9D3B858B0588C832D92C5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BDD40CCD061EF8930D9EAAAB /* SenLearnTests */,
+			);
+			name = SenLearnTests;
+			productName = SenLearnTests;
+			productReference = 8199FB39CF20B271C71FA75A /* SenLearnTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		73A278A725F29B799EC7400B /* SenLearnUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 42DEFD3532D3EA64B0F1C2A0 /* Build configuration list for PBXNativeTarget "SenLearnUITests" */;
+			buildPhases = (
+				199DC0875BB236C38653571C /* Sources */,
+				2CB4BB408F3A5342EFA44E9B /* Frameworks */,
+				07CC97159A3FDF1F384800F7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A59F1C9081C8BD45CCE8B08F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8E51681CFABF34224A13518E /* SenLearnUITests */,
+			);
+			name = SenLearnUITests;
+			productName = SenLearnUITests;
+			productReference = E1F2521D281C39CC6888B910 /* SenLearnUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		FE3909405F21CDB0688EFCC3 /* SenLearn */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F9C1091CD2CE7BB2E79AB15 /* Build configuration list for PBXNativeTarget "SenLearn" */;
+			buildPhases = (
+				A07377F890A6ABFE307914D3 /* Sources */,
+				A3E210ABCA3E11DAE29CA165 /* Frameworks */,
+				06CD4435E127D8BB80B7D785 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A81E7C7ECD9FFB8299348812 /* SenLearn */,
+			);
+			name = SenLearn;
+			productName = SenLearn;
+			productReference = 65830ADE689123AA7D7B968A /* SenLearn.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F6F4DA8D93E88A08220E03B7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2700;
+			};
+			buildConfigurationList = 5D7731714D3E69D68AA8D7ED /* Build configuration list for PBXProject "SenLearn" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = zh_CN;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				zh_CN,
+				Base,
+			);
+			mainGroup = 2EB2D8158FC6EF9EB19CB439;
+			productRefGroup = FE0A091FDBFB3E9C31B7A1BD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FE3909405F21CDB0688EFCC3 /* SenLearn */,
+				702E22629503832E6886A939 /* SenLearnTests */,
+				73A278A725F29B799EC7400B /* SenLearnUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		06CD4435E127D8BB80B7D785 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07CC97159A3FDF1F384800F7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82C09A007E0C3C2A5DD9081B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		199DC0875BB236C38653571C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29CA61FD58C891E164F5581B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A07377F890A6ABFE307914D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8CD9D3B858B0588C832D92C5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FE3909405F21CDB0688EFCC3 /* SenLearn */;
+			targetProxy = 0D74AD2BF10D823329764523 /* PBXContainerItemProxy */;
+		};
+		A59F1C9081C8BD45CCE8B08F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FE3909405F21CDB0688EFCC3 /* SenLearn */;
+			targetProxy = A8463BD001128F17BFBB944B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0525C1FAC78E35B99F2B74E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Config/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lsqlite3",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		10D3938B7F26E844CA814C15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearnuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SenLearn;
+			};
+			name = Debug;
+		};
+		1D8C0C6B1D22EA8C7669B263 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		41FFE7F5ED97A08E6B9E53D6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Config/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lsqlite3",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8127AEE8EF37617597AEB7BA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearntests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SenLearn.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SenLearn";
+			};
+			name = Release;
+		};
+		9F62A01AE09B28FF159B7192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearntests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SenLearn.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SenLearn";
+			};
+			name = Debug;
+		};
+		BFD315016DE16320F7E2120C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C868727C194DBF3A853054C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.senlearnuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SenLearn;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		173FBE8859E86512D4B56BB7 /* Build configuration list for PBXNativeTarget "SenLearnTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F62A01AE09B28FF159B7192 /* Debug */,
+				8127AEE8EF37617597AEB7BA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		42DEFD3532D3EA64B0F1C2A0 /* Build configuration list for PBXNativeTarget "SenLearnUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10D3938B7F26E844CA814C15 /* Debug */,
+				C868727C194DBF3A853054C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5D7731714D3E69D68AA8D7ED /* Build configuration list for PBXProject "SenLearn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFD315016DE16320F7E2120C /* Debug */,
+				1D8C0C6B1D22EA8C7669B263 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8F9C1091CD2CE7BB2E79AB15 /* Build configuration list for PBXNativeTarget "SenLearn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0525C1FAC78E35B99F2B74E2 /* Debug */,
+				41FFE7F5ED97A08E6B9E53D6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F6F4DA8D93E88A08220E03B7 /* Project object */;
 }

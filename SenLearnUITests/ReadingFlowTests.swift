@@ -87,6 +87,54 @@ final class ReadingFlowTests: XCTestCase {
     }
 
     @MainActor
+    func testRotationPreviewCancelSaveAndReadAgain() throws {
+        continueAfterFailure = false
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing", "--reset-library"]
+        app.launch()
+        let sample = app.buttons["library.sample"]
+        XCTAssertTrue(sample.waitForExistence(timeout: 10))
+        if !sample.isHittable { app.swipeUp() }
+        sample.tap()
+        let squirrel = app.buttons["squirrel"].firstMatch
+        XCTAssertTrue(squirrel.waitForExistence(timeout: 40))
+        squirrel.tap()
+        app.buttons["reader.more"].tap()
+        app.buttons["reader.rotate"].tap()
+        XCTAssertFalse(app.buttons["rotation.save"].isEnabled)
+        app.buttons["rotation.right"].tap()
+        capture("rotation-preview", app)
+        app.buttons["rotation.cancel"].tap()
+        XCTAssertEqual(app.staticTexts["reader.selectedWord"].label, "squirrel")
+        app.buttons["reader.more"].tap()
+        app.buttons["reader.rotate"].tap()
+        app.buttons["rotation.right"].tap()
+        app.buttons["rotation.save"].tap()
+        XCTAssertTrue(app.buttons["reader.more"].waitForExistence(timeout: 15))
+        XCTAssertFalse(app.staticTexts["reader.selectedWord"].exists)
+        XCTAssertEqual(app.staticTexts["reader.pageCounter"].label, "1 / 2")
+        capture("reader-rotated", app)
+        app.buttons["reader.more"].tap()
+        let rotate = app.buttons["reader.rotate"]
+        let enabled = NSPredicate(format: "exists == true AND enabled == true")
+        expectation(for: enabled, evaluatedWith: rotate)
+        waitForExpectations(timeout: 40)
+        rotate.tap()
+        app.buttons["rotation.left"].tap()
+        app.buttons["rotation.save"].tap()
+        XCTAssertTrue(squirrel.waitForExistence(timeout: 40))
+        squirrel.tap()
+        XCTAssertEqual(app.staticTexts["reader.selectedWord"].label, "squirrel")
+        capture("reader-after-rotation", app)
+        app.terminate()
+        app.launchArguments = ["--ui-testing"]
+        app.launch()
+        XCTAssertTrue(squirrel.waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["reader.pageCounter"].label, "1 / 2")
+    }
+
+    @MainActor
     private func capture(_ name: String, _ app: XCUIApplication) {
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name
