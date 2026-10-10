@@ -6,6 +6,8 @@ import UniformTypeIdentifiers
 
 /// Decodes one page at a time so large camera images do not stay in memory together.
 actor MaterialImporter {
+    typealias ProgressHandler = @Sendable (Int, Int) async -> Void
+
     static let maximumFileBytes = 100 * 1_024 * 1_024
     static let maximumPDFPages = 100
     static let maximumPhotos = 30
@@ -41,7 +43,7 @@ actor MaterialImporter {
         }
     }
 
-    func importFile(at url: URL) throws -> ImportedMaterial {
+    func importFile(at url: URL, onProgress: ProgressHandler = { _, _ in }) async throws -> ImportedMaterial {
         let hasAccess = url.startAccessingSecurityScopedResource()
         defer { if hasAccess { url.stopAccessingSecurityScopedResource() } }
         try Task.checkCancellation()
@@ -50,15 +52,15 @@ actor MaterialImporter {
         let type = UTType(filenameExtension: url.pathExtension)
         let isPDF = type?.conforms(to: .pdf) == true || data.starts(with: Data("%PDF-".utf8))
         if isPDF {
-            return try importPDF(data: data, title: title)
+            return try await importPDF(data: data, title: title, onProgress: onProgress)
         }
         guard type?.conforms(to: .image) == true || CGImageSourceCreateWithData(data as CFData, nil) != nil else {
             throw ImportError.unsupportedFile
         }
-        return try importPhotos([data], title: title)
+        return try await importPhotos([data], title: title, onProgress: onProgress)
     }
 
-    func importPhotos(_ data: [Data], title: String) throws -> ImportedMaterial {
+    func importPhotos(_ data: [Data], title: String, onProgress: ProgressHandler = { _, _ in }) async throws -> ImportedMaterial {
         guard !data.isEmpty else { throw ImportError.noPhotos }
         guard data.count <= Self.maximumPhotos else { throw ImportError.tooManyPhotos }
         var totalBytes = 0
@@ -67,10 +69,13 @@ actor MaterialImporter {
             totalBytes += item.count
         }
         var pages: [ImportedPage] = []
+        await onProgress(0, data.count)
         for (index, item) in data.enumerated() {
             try Task.checkCancellation()
             let page = try autoreleasepool { try makeImagePage(data: item, number: index + 1) }
             pages.append(page)
+            await onProgress(pages.count, data.count)
+            try Task.checkCancellation()
         }
         return ImportedMaterial(title: title.isEmpty ? "新阅读材料" : title, pages: pages)
     }
@@ -122,12 +127,13 @@ actor MaterialImporter {
         return try encodedPage(rendered)
     }
 
-    private func importPDF(data: Data, title: String) throws -> ImportedMaterial {
+    private func importPDF(data: Data, title: String, onProgress: ProgressHandler) async throws -> ImportedMaterial {
         guard let document = PDFDocument(data: data) else { throw ImportError.unreadableFile }
         guard !document.isEncrypted, !document.isLocked else { throw ImportError.encryptedPDF }
         guard document.pageCount > 0 else { throw ImportError.emptyPDF }
         guard document.pageCount <= Self.maximumPDFPages else { throw ImportError.tooManyPages }
         var pages: [ImportedPage] = []
+        await onProgress(0, document.pageCount)
         for index in 0..<document.pageCount {
             try Task.checkCancellation()
             let page = try autoreleasepool { () throws -> ImportedPage in
@@ -158,6 +164,8 @@ actor MaterialImporter {
                 return try encodedPage(image)
             }
             pages.append(page)
+            await onProgress(pages.count, document.pageCount)
+            try Task.checkCancellation()
         }
         return ImportedMaterial(title: title.isEmpty ? "新阅读材料" : title, pages: pages, originalData: data, originalExtension: "pdf")
     }

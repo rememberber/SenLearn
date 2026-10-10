@@ -16,6 +16,8 @@ struct ContentView: View {
     @State private var appendDestination: UUID?
     @State private var importTask: Task<Void, Never>?
     @State private var importing = false
+    @State private var importProgress: (completed: Int, total: Int)?
+    @State private var importStage = "正在准备书页…"
     @State private var cancellingImport = false
     @State private var issue: String?
     private let importer = MaterialImporter()
@@ -39,8 +41,19 @@ struct ContentView: View {
             if importing {
                 Color.black.opacity(0.2).ignoresSafeArea()
                 VStack(spacing: 18) {
-                    ProgressView().controlSize(.large).tint(appearance.theme.accent)
-                    Text(cancellingImport ? "正在取消…" : "正在准备书页…").font(.headline)
+                    if let progress = importProgress {
+                        ProgressView(value: Double(progress.completed), total: Double(progress.total))
+                            .tint(appearance.theme.accent).frame(maxWidth: 260)
+                            .accessibilityLabel(importStage)
+                            .accessibilityValue("已完成 \(progress.completed) / \(progress.total)")
+                    } else {
+                        ProgressView().controlSize(.large).tint(appearance.theme.accent)
+                    }
+                    Text(cancellingImport ? "正在取消…" : importStage).font(.headline)
+                    if let progress = importProgress {
+                        Text("\(progress.completed) / \(progress.total)").monospacedDigit()
+                            .foregroundStyle(.secondary).accessibilityIdentifier("import.progress")
+                    }
                     Text("材料会保存在这台设备上").font(.subheadline).foregroundStyle(.secondary)
                     Button("取消") { cancellingImport = true; importTask?.cancel() }
                         .disabled(cancellingImport).buttonStyle(SoftButtonStyle(theme: appearance.theme))
@@ -59,14 +72,23 @@ struct ContentView: View {
             case .camera:
                 DocumentCamera(onComplete: { data in
                     sheet = nil
-                    startImport { try await importer.importPhotos(data, title: "我的拍照书") }
+                    startImport {
+                        try await importer.importPhotos(data, title: "我的拍照书") { @Sendable completed, total in
+                            await updateProgress(completed, total)
+                        }
+                    }
                 }, onCancel: { sheet = nil }, onFailure: { error in sheet = nil; issue = error.localizedDescription })
                 .ignoresSafeArea()
             }
         }
         .fileImporter(isPresented: $pickingFile, allowedContentTypes: [.pdf, .image]) { result in
             switch result {
-            case .success(let url): startImport { try await importer.importFile(at: url) }
+            case .success(let url):
+                startImport {
+                    try await importer.importFile(at: url) { @Sendable completed, total in
+                        await updateProgress(completed, total)
+                    }
+                }
             case .failure(let error): issue = error.localizedDescription
             }
         }
@@ -77,6 +99,8 @@ struct ContentView: View {
             startImport {
                 var data: [Data] = []
                 var totalBytes = 0
+                importStage = "正在读取照片…"
+                importProgress = (0, photos.count)
                 for photo in photos {
                     try Task.checkCancellation()
                     guard let bytes = try await photo.loadTransferable(type: Data.self) else {
@@ -87,8 +111,11 @@ struct ContentView: View {
                     }
                     totalBytes += bytes.count
                     data.append(bytes)
+                    importProgress = (data.count, photos.count)
                 }
-                return try await importer.importPhotos(data, title: "我的照片书")
+                return try await importer.importPhotos(data, title: "我的照片书") { @Sendable completed, total in
+                    await updateProgress(completed, total)
+                }
             }
             selectedPhotos = []
         }
@@ -146,18 +173,27 @@ struct ContentView: View {
         startImport {
             let url = try SampleMaterial.makePDF()
             defer { try? FileManager.default.removeItem(at: url) }
-            var result = try await importer.importFile(at: url)
+            var result = try await importer.importFile(at: url) { @Sendable completed, total in
+                await updateProgress(completed, total)
+            }
             result.title = "Forest Friends · 示例"
             return result
         }
     }
 
+    @MainActor
+    private func updateProgress(_ completed: Int, _ total: Int) {
+        importStage = "正在整理书页…"
+        importProgress = (completed, total)
+    }
+
     private func startImport(_ operation: @escaping () async throws -> ImportedMaterial) {
         guard !importing, library.isAvailable else { return }
         speech.stop(); importing = true; cancellingImport = false
+        importProgress = nil; importStage = "正在准备书页…"
         let destination = appendDestination
         importTask = Task { @MainActor in
-            defer { importing = false; cancellingImport = false; importTask = nil }
+            defer { importing = false; cancellingImport = false; importTask = nil; importProgress = nil }
             do {
                 let material = try await operation()
                 try Task.checkCancellation()

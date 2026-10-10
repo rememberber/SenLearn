@@ -137,7 +137,12 @@ final class MaterialImporterTests: XCTestCase {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("pdf")
         defer { try? FileManager.default.removeItem(at: url) }
         try source.write(to: url)
-        let material = try await MaterialImporter().importFile(at: url)
+        let progress = ImportProgressRecorder()
+        let material = try await MaterialImporter().importFile(at: url) { completed, total in
+            await progress.record(completed, total)
+        }
+        let updates = await progress.values
+        XCTAssertEqual(updates, ["0/2", "1/2", "2/2"])
         XCTAssertEqual(material.pages.count, 2)
         XCTAssertEqual(material.originalData, source)
         XCTAssertEqual(material.originalExtension, "pdf")
@@ -166,6 +171,27 @@ final class MaterialImporterTests: XCTestCase {
         } catch MaterialImporter.ImportError.tooManyPhotos {} catch { XCTFail("Unexpected error: \(error)") }
     }
 
+    func testCancellationAfterFirstPhotoDoesNotReturnPartialMaterial() async throws {
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 30, height: 40)).image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 30, height: 40))
+        }
+        let data = try XCTUnwrap(image.jpegData(compressionQuality: 0.9))
+        let progress = ImportProgressRecorder()
+        let task = Task {
+            try await MaterialImporter().importPhotos([data, data, data], title: "Cancelled") { completed, total in
+                await progress.record(completed, total)
+                if completed == 1 { withUnsafeCurrentTask { $0?.cancel() } }
+            }
+        }
+        do {
+            _ = try await task.value
+            XCTFail("A cancelled import must not return partial material.")
+        } catch is CancellationError {} catch { XCTFail("Unexpected error: \(error)") }
+        let updates = await progress.values
+        XCTAssertEqual(updates, ["0/3", "1/3"])
+    }
+
     func testCorruptImageReturnsAnActionableError() async throws {
         do {
             _ = try await MaterialImporter().importPhotos([Data("invalid image".utf8)], title: "Invalid")
@@ -174,4 +200,9 @@ final class MaterialImporterTests: XCTestCase {
             XCTAssertEqual(number, 1)
         } catch { XCTFail("Unexpected error: \(error)") }
     }
+}
+
+private actor ImportProgressRecorder {
+    var values: [String] = []
+    func record(_ completed: Int, _ total: Int) { values.append("\(completed)/\(total)") }
 }
