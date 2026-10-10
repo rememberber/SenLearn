@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="forest">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>SenLearn · 森林里的小伙伴</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M19.8 4.2C11.6 3.4 5 6 5 12.5A6.5 6.5 0 0 0 11.5 19C18 19 20.6 12.4 19.8 4.2Z"/><path d="m4 21 10-10M8 17v-5m0 5h5"/></symbol>
+    <symbol id="icon-sound" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8V4Z"/></symbol>
+    <symbol id="icon-repeat" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 2 8M4 4v6h6"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24"><path d="M12 5v15M12 5C9 3 5 3 2 4v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1Z"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#reading">跳到点读书页</a>
+  <header class="app-header">
+    <div class="brand" aria-label="SenLearn">
+      <span class="brand-mark"><svg><use href="#icon-leaf"/></svg></span>
+      <span>SenLearn<span class="brand-dot">.</span></span>
+    </div>
+    <div class="book-identity"><svg aria-hidden="true"><use href="#icon-book"/></svg><span>Forest Friends</span><span class="header-page" id="header-page">01 / 02</span></div>
+    <div class="header-actions"><span class="prototype-tag">交互原型</span><button class="settings-trigger" id="open-settings" type="button" aria-haspopup="dialog"><svg aria-hidden="true"><use href="#icon-settings"/></svg><span>设置</span></button></div>
+  </header>
+
+  <main id="reading" tabindex="-1">
+    <section class="reading-intro" aria-labelledby="reading-title">
+      <div><p class="eyebrow"><span></span> 每一个小发现，都从点一点开始</p><h1 id="reading-title">森林里的小伙伴</h1><p class="intro-description">点一点单词，听听它的声音。</p></div>
+      <nav class="page-controls" aria-label="翻页"><button id="previous-page" class="icon-button" type="button" aria-label="上一页" disabled><svg class="flipped" aria-hidden="true"><use href="#icon-arrow"/></svg></button><span class="page-label" id="page-label">第 <strong>1</strong> 页 <span>/ 2</span></span><button id="next-page" class="icon-button" type="button" aria-label="下一页"><svg aria-hidden="true"><use href="#icon-arrow"/></svg></button></nav>
+    </section>
+
+    <section class="reading-page" aria-label="Forest Friends 点读书页">
+      <div class="page-topline"><span>FOREST FRIENDS</span><span class="lesson-caption" id="lesson-caption">A little forest friend</span><span id="printed-page">01</span></div>
+      <div class="lesson-layout">
+        <figure class="lesson-art"><div class="illustration-wash"></div><img src="../assets/forest-lesson.png" alt="一只小松鼠在森林里，身旁有大树和一颗种子。" width="1536" height="1024"><figcaption><span class="little-line"></span> A little world. A big discovery.</figcaption></figure>
+        <div class="reading-content"><div class="sentence-heading"><span class="section-kicker">READ & DISCOVER</span><span class="instruction">点词听发音</span></div><div id="sentences" class="sentences"></div>
+          <aside class="word-card" aria-label="当前单词"><span class="word-card-mark"><svg aria-hidden="true"><use href="#icon-leaf"/></svg></span><div class="word-card-copy"><span class="word-caption">认识一个新朋友</span><div class="word-definition"><strong id="selected-word" lang="en">squirrel</strong><span id="word-translation">松鼠</span></div></div><button class="word-speak" id="word-speak" type="button" aria-label="播放 squirrel 的发音"><svg aria-hidden="true"><use href="#icon-sound"/></svg></button></aside>
+        </div>
+      </div>
+      <div class="page-bottomline"><span><span class="selection-dot"></span> <span id="selection-caption">已选中 squirrel</span></span><span>慢慢读，也很好。</span></div>
+    </section>
+
+    <section class="audio-tools" aria-label="点读播放控制">
+      <div class="audio-toolbar"><div class="audio-feedback"><span class="audio-indicator" id="audio-indicator"></span><p id="audio-status" role="status" aria-live="polite" aria-atomic="true">准备好了，点一个单词试试。</p></div><div class="speed-control"><label for="reading-speed">语速</label><select id="reading-speed" aria-label="朗读语速"><option value="0.8">0.8× 慢一点</option><option value="1" selected>1× 正常</option></select></div></div>
+      <div class="primary-controls"><button class="primary-action word-action" id="listen-word" type="button"><span class="action-icon"><svg aria-hidden="true"><use href="#icon-sound"/></svg></span><span><strong>听单词</strong><small id="listen-word-caption" lang="en">squirrel</small></span></button><button class="primary-action sentence-action" id="listen-sentence" type="button"><span class="action-icon"><svg aria-hidden="true"><use href="#icon-play"/></svg></span><span><strong>听整句</strong><small id="listen-sentence-caption">第 1 句</small></span></button><button class="primary-action repeat-action" id="repeat-audio" type="button"><span class="action-icon"><svg aria-hidden="true"><use href="#icon-repeat"/></svg></span><span><strong>再听一次</strong><small id="repeat-caption">再听当前单词</small></span></button></div>
+      <div class="playback-footer"><span id="voice-note">正在检查设备本地声音…</span><button id="stop-audio" class="stop-button" type="button" disabled><svg aria-hidden="true"><use href="#icon-stop"/></svg><span>停止播放</span></button></div>
+    </section>
+    <footer class="app-footer"><span class="footer-brand">SenLearn · 陪伴每一次小小探索</span><span>示例材料 · 点读交互预览</span></footer>
+  </main>
+
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+    <div class="settings-top"><div><span class="settings-eyebrow">MAKE IT YOURS</span><h2 id="settings-title">阅读设置</h2></div><button id="close-settings" class="icon-button close-settings" type="button" aria-label="关闭阅读设置" autofocus><svg aria-hidden="true"><use href="#icon-close"/></svg></button></div>
+    <div class="settings-body">
+      <fieldset class="theme-fieldset"><legend>外观主题</legend><p class="settings-description">挑一个喜欢的颜色，继续你的小探索。</p><div class="theme-options">
+        <label class="theme-option forest-option"><input type="radio" name="theme" value="forest" checked><span class="theme-preview preview-forest" aria-hidden="true"><span class="preview-paper"><span class="preview-landscape"></span><i></i><i></i></span><span class="preview-buttons"><i></i><i></i><i></i></span></span><span class="theme-option-bottom"><span><strong>森间书桌</strong><small>默认 · 温暖森林</small></span><span class="theme-check" aria-hidden="true"><svg><use href="#icon-check"/></svg></span></span></label>
+        <label class="theme-option native-option"><input type="radio" name="theme" value="native"><span class="theme-preview preview-native" aria-hidden="true"><span class="preview-paper"><span class="preview-landscape"></span><i></i><i></i></span><span class="preview-buttons"><i></i><i></i><i></i></span></span><span class="theme-option-bottom"><span><strong>清透原生</strong><small>清晰简洁</small></span><span class="theme-check" aria-hidden="true"><svg><use href="#icon-check"/></svg></span></span></label>
+        <label class="theme-option play-option"><input type="radio" name="theme" value="play"><span class="theme-preview preview-play" aria-hidden="true"><span class="preview-paper"><span class="preview-landscape"></span><i></i><i></i></span><span class="preview-buttons"><i></i><i></i><i></i></span></span><span class="theme-option-bottom"><span><strong>探索乐园</strong><small>活泼童趣</small></span><span class="theme-check" aria-hidden="true"><svg><use href="#icon-check"/></svg></span></span></label>
+        <label class="theme-option night-option"><input type="radio" name="theme" value="night"><span class="theme-preview preview-night" aria-hidden="true"><span class="preview-paper"><span class="preview-landscape"></span><i></i><i></i></span><span class="preview-buttons"><i></i><i></i><i></i></span></span><span class="theme-option-bottom"><span><strong>月光共读</strong><small>安静专注</small></span><span class="theme-check" aria-hidden="true"><svg><use href="#icon-check"/></svg></span></span></label>
+      </div></fieldset>
+      <p class="theme-note"><svg aria-hidden="true"><use href="#icon-check"/></svg>大按钮一直在熟悉的位置，书页保持原色。</p>
+      <div class="settings-divider"></div>
+      <div class="motion-setting"><label for="reduce-motion"><strong>减少动态效果</strong><span>让界面切换更安静</span></label><input type="checkbox" id="reduce-motion" role="switch"></div><p class="system-motion-note" id="system-motion-note">同时尊重设备的减少动态效果设置。</p>
+      <div class="settings-divider"></div>
+      <div class="theme-reset"><div><strong>回到最初的森林</strong><p>仅恢复默认主题，保留其他阅读设置。</p></div><button id="reset-theme" type="button">恢复默认</button></div>
+      <p class="storage-message" id="storage-message" role="status" aria-live="polite">主题已保存在这台设备，下次打开会继续使用。</p>
+    </div>
+    <div class="settings-bottom"><span><svg aria-hidden="true"><use href="#icon-leaf"/></svg>你喜欢的样子，就是好样子。</span><button id="done-settings" type="button">继续阅读<svg aria-hidden="true"><use href="#icon-arrow"/></svg></button></div>
+  </dialog>
+</body>
+</html>
