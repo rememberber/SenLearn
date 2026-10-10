@@ -32,3 +32,8 @@ dist/
 # Local test output
 artifacts/
 *.log
+
+# Pinned offline speech assets (recreated by scripts/prepare_kokoro.py)
+/Models/Kokoro/
+/Models/Kokoro.incoming/
+/Packages/KokoroRuntime/Frameworks/

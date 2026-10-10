@@ -4,7 +4,7 @@ import SwiftUI
 struct SenLearnApp: App {
     @StateObject private var library: LibraryStore
     @StateObject private var appearance = AppearanceSettings()
-    @StateObject private var speech = SpeechPlayer()
+    @StateObject private var speech: SpeechPlayer
 
     init() {
         var directory: URL?
@@ -14,12 +14,13 @@ struct SenLearnApp: App {
                 .appendingPathComponent("SenLearnUITests", isDirectory: true)
             if ProcessInfo.processInfo.arguments.contains("--reset-library"), let directory {
                 try? FileManager.default.removeItem(at: directory)
-                for key in ["lastOpenedBookID", "appearance.theme", "appearance.reduceMotion", "appearance.parentPanel"] {
+                for key in ["lastOpenedBookID", "appearance.theme", "appearance.reduceMotion", "appearance.parentPanel", "speech.engine", "speech.rate"] {
                     UserDefaults.standard.removeObject(forKey: key)
                 }
             }
         }
         #endif
+        _speech = StateObject(wrappedValue: SpeechPlayer())
         _library = StateObject(wrappedValue: LibraryStore(rootDirectory: directory))
     }
 

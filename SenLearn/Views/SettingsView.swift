@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var appearance: AppearanceSettings
     @ObservedObject var speech: SpeechPlayer
+    @State private var showingLicenses = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
 
@@ -36,6 +37,7 @@ struct SettingsView: View {
                 }
             }
         }
+        .sheet(isPresented: $showingLicenses) { SpeechLicensesView() }
         .tint(theme.accent)
         .preferredColorScheme(theme == .night ? .dark : .light)
     }
@@ -143,14 +145,30 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeading("朗读声音", icon: "speaker.wave.2")
             VStack(alignment: .leading, spacing: 12) {
-                Label("使用这台设备的声音", systemImage: "iphone.and.arrow.forward")
-                    .font(.body.weight(.semibold))
+                Picker("朗读方式", selection: $speech.engine) {
+                    ForEach(SpeechEngine.allCases) { engine in Text(engine.name).tag(engine) }
+                }.pickerStyle(.segmented).accessibilityIdentifier("settings.speechEngine")
                 Text(speech.voiceAvailabilitySummary)
                     .font(.subheadline)
-                Text("中文与英文会随文字选择声音。首次使用前，请先在断网时分别试读一句，确认声音已准备好。")
+                Text(speech.engine == .kokoro ? "中文与英文随文字自动切换。声音在本机生成，无需下载或联网。" : "使用设备提供的声音；可用声音取决于系统配置。")
                     .font(.footnote)
                     .foregroundStyle(theme.ink.opacity(0.72))
                     .fixedSize(horizontal: false, vertical: true)
+                HStack {
+                    Button("试听中文") { speech.speak("小松鼠在森林里找到了一个种子。") }
+                        .accessibilityIdentifier("settings.testChinese")
+                    Button("试听英文") { speech.speak("The little squirrel lives in the forest.") }
+                        .accessibilityIdentifier("settings.testEnglish")
+                }.buttonStyle(SoftButtonStyle(theme: theme))
+                if speech.isSpeaking {
+                    Button("停止试听") { speech.stop() }.frame(minHeight: 44)
+                }
+                if let status = speech.statusMessage { Text(status).font(.footnote) }
+                if speech.engine == .kokoro, let summary = speech.synthesisSummary {
+                    Text(summary).font(.caption).foregroundStyle(.secondary)
+                        .accessibilityIdentifier("settings.synthesisSummary")
+                }
+                Button("开源组件与许可") { showingLicenses = true }.font(.footnote).frame(minHeight: 44)
             }
             .padding(20)
             .frame(maxWidth: .infinity, alignment: .leading)

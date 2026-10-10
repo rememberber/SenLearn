@@ -135,6 +135,36 @@ final class ReadingFlowTests: XCTestCase {
     }
 
     @MainActor
+    func testKokoroSettingsBilingualPreviewAndExplicitSystemChoice() throws {
+        continueAfterFailure = false
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing", "--reset-library"]
+        app.launch()
+        app.buttons["library.settings"].tap()
+        let chinese = app.buttons["settings.testChinese"]
+        let scroll = app.scrollViews["settings.scroll"]
+        for _ in 0..<6 where !chinese.isHittable { scroll.swipeUp() }
+        XCTAssertTrue(chinese.isHittable)
+        XCTAssertTrue(app.staticTexts["中文和英文声音已随应用安装，可直接离线朗读。"].exists)
+        chinese.tap()
+        XCTAssertTrue(app.staticTexts["settings.synthesisSummary"].waitForExistence(timeout: 40))
+        capture("kokoro-settings", app)
+        if app.buttons["停止试听"].exists { app.buttons["停止试听"].tap() }
+        app.buttons["settings.testEnglish"].tap()
+        app.segmentedControls["settings.speechEngine"].buttons["系统声音"].tap()
+        XCTAssertFalse(app.buttons["停止试听"].exists)
+        app.segmentedControls["settings.speechEngine"].buttons["Kokoro 离线声音"].tap()
+        app.buttons["完成"].tap()
+        app.terminate()
+        app.launchArguments = ["--ui-testing"]
+        app.launch()
+        app.buttons["library.settings"].tap()
+        for _ in 0..<6 where !chinese.isHittable { scroll.swipeUp() }
+        XCTAssertTrue(app.staticTexts["中文和英文声音已随应用安装，可直接离线朗读。"].exists)
+    }
+
+    @MainActor
     private func capture(_ name: String, _ app: XCUIApplication) {
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name

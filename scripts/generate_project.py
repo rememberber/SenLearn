@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
-"""Generate the dependency-free Xcode project. Requires Xcode 16 or later."""
+"""Generate the Xcode project with the pinned local Kokoro package. Requires Xcode 16+."""
 from pathlib import Path
 import hashlib
+import json
+import subprocess
 
 ROOT = Path(__file__).resolve().parent.parent
 objects = []
+# Keep the user's local device-signing choices when regenerating an existing checkout.
+teams = {}
+existing = ROOT / 'SenLearn.xcodeproj/project.pbxproj'
+if existing.exists():
+    parsed = subprocess.run(['plutil', '-convert', 'json', '-o', '-', str(existing)], capture_output=True, text=True)
+    if parsed.returncode == 0:
+        for key, value in json.loads(parsed.stdout)['objects'].items():
+            if value.get('isa') == 'XCBuildConfiguration' and value.get('buildSettings', {}).get('DEVELOPMENT_TEAM'):
+                teams[key] = value['buildSettings']['DEVELOPMENT_TEAM']
 def uid(name):
     return hashlib.sha1(name.encode()).hexdigest()[:24].upper()
 def add(name, body):
@@ -13,14 +24,25 @@ def add(name, body):
 def refs(names):
     return '(' + ', '.join(uid(n) for n in names) + ',)'
 
-targets = ['SenLearn', 'SenLearnTests', 'SenLearnUITests']
+add('KokoroPackage', 'isa = XCLocalSwiftPackageReference; relativePath = Packages/KokoroRuntime;')
+add('KokoroProduct', 'isa = XCSwiftPackageProductDependency; productName = KokoroRuntime;')
+add('KokoroLink', f'isa = PBXBuildFile; productRef = {uid("KokoroProduct")};')
+add('KokoroTestLink', f'isa = PBXBuildFile; productRef = {uid("KokoroProduct")};')
+add('KokoroFolder', 'isa = PBXFileReference; lastKnownFileType = folder; path = Models/Kokoro; sourceTree = SOURCE_ROOT;')
+add('KokoroResource', f'isa = PBXBuildFile; fileRef = {uid("KokoroFolder")};')
+
+targets = ['SenLearn' , 'SenLearnTests', 'SenLearnUITests']
 for name in targets:
     ext = 'app' if name == 'SenLearn' else 'xctest'
     product_type = 'application' if ext == 'app' else ('bundle.ui-testing' if name.endswith('UITests') else 'bundle.unit-test')
     add(name + 'Root', f'isa = PBXFileSystemSynchronizedRootGroup; path = {name}; sourceTree = "<group>";')
     add(name + 'Product', f'isa = PBXFileReference; explicitFileType = {"wrapper.application" if ext == "app" else "wrapper.cfbundle"}; path = {name}.{ext}; sourceTree = BUILT_PRODUCTS_DIR;')
     for phase in ['Sources', 'Frameworks', 'Resources']:
-        add(name + phase, f'isa = PBX{phase}BuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;')
+        files = '()'
+        if phase == 'Frameworks' and name in ['SenLearn', 'SenLearnTests']:
+            files = refs(['KokoroLink' if name == 'SenLearn' else 'KokoroTestLink'])
+        if phase == 'Resources' and name == 'SenLearn': files = refs(['KokoroResource'])
+        add(name + phase, f'isa = PBX{phase}BuildPhase; buildActionMask = 2147483647; files = {files}; runOnlyForDeploymentPostprocessing = 0;')
     dependencies = '()'
     if name != 'SenLearn':
         add(name + 'Proxy', f'isa = PBXContainerItemProxy; containerPortal = {uid("Project")}; proxyType = 1; remoteGlobalIDString = {uid("SenLearn")}; remoteInfo = SenLearn;')
@@ -40,15 +62,18 @@ for name in targets:
                 settings += 'TEST_TARGET_NAME = SenLearn;'
             else:
                 settings += 'TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SenLearn.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SenLearn"; BUNDLE_LOADER = "$(TEST_HOST)";'
+        if uid(name + config) in teams:
+            settings += f'DEVELOPMENT_TEAM = "{teams[uid(name + config)]}";'
         add(name + config, f'isa = XCBuildConfiguration; name = {config}; buildSettings = {{ {settings} }};')
     add(name + 'Configs', f'isa = XCConfigurationList; buildConfigurations = {refs([name + "Debug", name + "Release"])}; defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;')
-    add(name, f'''isa = PBXNativeTarget; name = {name}; productName = {name}; productReference = {uid(name + "Product")};
+    packages = refs(['KokoroProduct']) if name in ['SenLearn', 'SenLearnTests'] else '()'
+    add(name, f'''isa = PBXNativeTarget; packageProductDependencies = {packages}; name = {name}; productName = {name}; productReference = {uid(name + "Product")};
     productType = "com.apple.product-type.{product_type}"; buildConfigurationList = {uid(name + "Configs")};
     buildPhases = {refs([name + p for p in ['Sources', 'Frameworks', 'Resources']])};
     buildRules = (); dependencies = {dependencies}; fileSystemSynchronizedGroups = {refs([name + 'Root'])};''')
 
 add('Products', f'isa = PBXGroup; name = Products; sourceTree = "<group>"; children = {refs([n + "Product" for n in targets])};')
-add('MainGroup', f'isa = PBXGroup; sourceTree = "<group>"; children = {refs([n + "Root" for n in targets] + ["Products"])};')
+add('MainGroup', f'isa = PBXGroup; sourceTree = "<group>"; children = {refs([n + "Root" for n in targets] + ["KokoroFolder", "Products"])};')
 for config in ['Debug', 'Release']:
     settings = 'SDKROOT = iphoneos; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; ENABLE_USER_SCRIPT_SANDBOXING = YES;'
     settings += 'GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR; GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;'
@@ -58,7 +83,7 @@ for config in ['Debug', 'Release']:
         settings += 'SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; VALIDATE_PRODUCT = YES;'
     add('Project' + config, f'isa = XCBuildConfiguration; name = {config}; buildSettings = {{ {settings} }};')
 add('ProjectConfigs', f'isa = XCConfigurationList; buildConfigurations = {refs(["ProjectDebug", "ProjectRelease"])}; defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;')
-add('Project', f'''isa = PBXProject; attributes = {{ BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 2700; }};
+add('Project', f'''isa = PBXProject; packageReferences = {refs(['KokoroPackage'])}; attributes = {{ BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 2700; }};
 buildConfigurationList = {uid('ProjectConfigs')}; compatibilityVersion = "Xcode 16.0"; developmentRegion = zh_CN;
 knownRegions = (en, zh_CN, Base); mainGroup = {uid('MainGroup')}; productRefGroup = {uid('Products')};
 projectDirPath = ""; projectRoot = ""; targets = {refs(targets)};''')

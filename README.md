@@ -1,15 +1,17 @@
 # SenLearn · 森学
 
-面向儿童学习与家长陪伴的本地 iOS / iPadOS 点读应用。当前版本是可运行的首个开发里程碑：真实材料导入、OCR 词框、系统语音点读和本地书架。
+面向儿童学习与家长陪伴的本地 iOS / iPadOS 点读应用。当前版本是可运行的首个开发里程碑：真实材料导入、OCR 词框、Kokoro 离线中英文点读和本地书架。
 
 ## 运行
+
+首次获取仓库后，先运行一次 `python3 scripts/prepare_kokoro.py`。脚本下载并校验固定版本的 iOS 运行库与模型；约 196 MB 压缩下载，模型展开约 206 MB。大文件由 `.gitignore` 排除，版本、来源和 SHA-256 保存在 `Models/kokoro.lock.json`。当前开发机已准备好，可直接运行。
 
 1. 使用 Xcode 16 或更新版本打开 `SenLearn.xcodeproj`。
 2. 选择 `SenLearn` scheme 和 iPad / iPhone 模拟器，运行。最低部署版本为 iOS / iPadOS 17。
 3. 空书架选择「试读示例」，应用会生成两页原创示例 PDF，经过与用户材料相同的导入、识别流程，再点击文字试听。
 4. 真机运行时，在 Signing & Capabilities 中选择自己的 Team，必要时改为唯一的 Bundle Identifier。仓库不包含个人签名配置。
 
-项目仅依赖 Apple 系统框架与 SQLite，无需安装 npm、CocoaPods 或第三方 Swift 包。项目已包含 Xcode 工程，新增 Swift 文件会由同步目录自动纳入工程。如需重建工程配置，可运行 `python3 scripts/generate_project.py`。
+项目使用 Apple 系统框架、SQLite，以及仓库内的 `Packages/KokoroRuntime` Swift 包；无需 npm 或 CocoaPods。Swift 包链接固定版本的 sherpa-onnx / ONNX Runtime iOS 二进制。项目已包含 Xcode 工程，新增 Swift 文件会由同步目录自动纳入工程。如需重建工程配置，可运行 `python3 scripts/generate_project.py`。
 
 ```sh
 xcodebuild -project SenLearn.xcodeproj -scheme SenLearn \
@@ -28,14 +30,15 @@ xcodebuild -project SenLearn.xcodeproj -scheme SenLearn \
 - 书架：导入、继续阅读、重命名、确认移除；SQLite 保存书本、识别结果、校对文字与页码。
 - 导入：PDF、本地图片、按选择顺序导入多张照片；支持通过家长辅助菜单向已有书追加页面。真机可调用系统多页文档扫描器。导入时显示照片读取及书页处理进度，支持取消；取消不会保存半本材料。
 - OCR：Vision 本地中英文识别；进入页面时按需识别，保留真实词框；失败可以重试。不会将示例文字冒充真实识别结果。
-- 点读：原页缩放、点词发音、跨行句子朗读、听整页、重听、暂停、停止与语速。相邻词命中存在歧义时显示候选词。
+- 点读：默认使用随应用安装的 Kokoro 1.1 中英文声音，文字只在本机处理；原页缩放、点词发音、跨行句子朗读、听整页、重听、暂停、停止与语速。相邻词命中存在歧义时显示候选词。
 - 校对：对照原图修改识别行，支持恢复原始识别。改过文字的行暂时关闭逐词点读，以免使用错误位置；可在文字列表或整页朗读中听到校对后的文字。
 - 书页整理：在「家长辅助 → 旋转书页」预览左右旋转，取消不改变书页；保存后重新识别，清除旧词框和本页校对文字，保留页码和原 PDF。保存失败时保留原书页。
+- 声音：设置中可以分别试听中文、英文，查看合成等待时间，并显式切换系统声音作对比；重听缓存有 12 MB 上限，长文字分段合成，停止、翻页、后台和音频中断会取消旧请求。
 - 外观：森间书桌、清透原生、探索乐园、月光共读；主题持久化，切换不重置页码、选词或语速。家长页目录、减少动态效果独立保存。
 
 ## 当前边界
 
-- 语音使用设备提供的 `AVSpeechSynthesizer` 声音。**尚未集成 Kokoro / Qwen3-TTS，也尚未完成“新安装后首次断网即可中英发音”的真机验收。** 无可用声音时显示提示，不调用云端 TTS。
+- 默认 Kokoro 使用打包的 int8 中英文模型，缺少资源时明确提示，不自动切回系统声音或云端。新安装飞行模式与发音质量仍需听读验收；Qwen3-TTS 和声音复刻未集成。选择系统声音时，可用声音仍由设备系统配置决定。
 - 连续拍摄需要支持系统文档扫描的真机；模拟器关闭这一入口。相机权限、发音质量、音频中断和真实教材表现仍需设备测试。
 - 一次导入最多 100 页 PDF、30 张照片、合计 100 MB。工作图像长边最多 2000 像素；PDF 原文件另存于本机，外部原文件不会修改。大 PDF 的导入目前需等全部页面生成工作图像后进入阅读，OCR 则逐页按需执行。
 - 不支持加密 PDF。照片的手动裁切、选区重识别、校对后的词框重新映射、后台 OCR 队列尚未完成。
@@ -49,6 +52,7 @@ xcodebuild -project SenLearn.xcodeproj -scheme SenLearn \
 - [产品概念](docs/DesignConcept.md)
 - [UI / UE 规则](docs/ui-ux/设计说明.md)
 - [工程决策与后续验收](docs/Development.md)
+- [Kokoro 接入与验证](docs/Kokoro.md)
 
 `SenLearnTests` 覆盖 SQLite 重启恢复、追加顺序、事务失败回滚、损坏数据保护、真实 Vision OCR、图像方向、PDF 渲染和句子分割；`SenLearnUITests` 覆盖示例导入、点词、翻页、主题切换与重启恢复。测试生成的数据库和截图独立于用户资料。
 

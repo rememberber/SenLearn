@@ -1,0 +1,31 @@
+SenLearn 离线语音组件
+
+Kokoro-82M v1.1-zh（量化模型）
+来源：https://huggingface.co/hexgrad/Kokoro-82M-v1.1-zh
+ONNX 模型、声音与词典包：https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models
+许可证：Apache License 2.0
+声音：英文 af_maple（0）、中文 zf_001（3）
+
+sherpa-onnx v1.13.8
+来源：https://github.com/k2-fsa/sherpa-onnx/tree/v1.13.8
+许可证：Apache License 2.0
+
+ONNX Runtime v1.28.1
+来源：https://github.com/microsoft/onnxruntime
+iOS 编译包：https://github.com/csukuangfj/onnxruntime-libs/releases/tag/v1.28.1
+许可证：MIT
+
+eSpeak NG（运行库内的发音组件及模型包内的数据）
+来源：https://github.com/espeak-ng/espeak-ng
+许可证：GNU GPL v3 或更新版本
+
+piper-phonemize
+来源：https://github.com/rhasspy/piper-phonemize
+许可证：MIT
+
+cppjieba（中文分词词典）
+来源：https://github.com/yanyiwu/cppjieba
+许可证：MIT
+
+以上组件在本机处理朗读文字，应用运行时不请求网络、不上传文字。
+许可证全文见下方条目。运行库及模型的来源与校验值记录在仓库 Models/kokoro.lock.json。

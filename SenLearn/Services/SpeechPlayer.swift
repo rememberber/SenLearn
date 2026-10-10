@@ -2,7 +2,13 @@ import AVFoundation
 import Combine
 import UIKit
 
-/// Uses voices exposed by the device. Bundled offline voices remain a separate milestone.
+enum SpeechEngine: String, CaseIterable, Identifiable {
+    case kokoro, system
+    var id: String { rawValue }
+    var name: String { self == .kokoro ? "Kokoro 离线声音" : "系统声音" }
+}
+
+/// Bundled Kokoro is the default; system speech remains an explicit comparison option.
 @MainActor
 final class SpeechPlayer: NSObject, ObservableObject {
     @Published private(set) var isSpeaking = false
@@ -16,8 +22,22 @@ final class SpeechPlayer: NSObject, ObservableObject {
         }
     }
 
+    @Published var engine: SpeechEngine {
+        didSet {
+            guard oldValue != engine else { return }
+            stop()
+            UserDefaults.standard.set(engine.rawValue, forKey: "speech.engine")
+        }
+    }
+    @Published private(set) var synthesisSummary: String?
+    private let kokoro = KokoroEngine()
+    private var offlineTask: Task<Void, Never>?
+    private var offlineRequestID: UUID?
+    private var audioPlayer: AVAudioPlayer?
+    private var playbackCompletion: CheckedContinuation<Void, Error>?
+
     @Published private var lastText = ""
-    private let synthesizer = AVSpeechSynthesizer()
+    private var synthesizer: AVSpeechSynthesizer?
     private let audioSessionQueue = DispatchQueue(label: "com.senlearn.audio-session")
     private var activeUtteranceID: ObjectIdentifier?
     private var pendingUtterance: AVSpeechUtterance?
@@ -28,6 +48,9 @@ final class SpeechPlayer: NSObject, ObservableObject {
     var canReplay: Bool { !lastText.isEmpty }
 
     var voiceAvailabilitySummary: String {
+        if engine == .kokoro {
+            return KokoroEngine.isBundled ? "中文和英文声音已随应用安装，可直接离线朗读。" : "离线声音文件不完整，请重新安装包含模型的版本。"
+        }
         let hasEnglish = availableVoice(language: "en-US") != nil
         let hasChinese = availableVoice(language: "zh-CN") != nil
         switch (hasEnglish, hasChinese) {
@@ -40,13 +63,23 @@ final class SpeechPlayer: NSObject, ObservableObject {
 
     override init() {
         let savedRate = UserDefaults.standard.object(forKey: "speech.rate") as? Double ?? 0.8
+        engine = SpeechEngine(rawValue: UserDefaults.standard.string(forKey: "speech.engine") ?? "") ?? .kokoro
         rate = savedRate.isFinite ? min(max(savedRate, 0.5), 1.2) : 0.8
         super.init()
-        synthesizer.delegate = self
 
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
             .sink { [weak self] _ in
                 Task { @MainActor [weak self] in self?.stop() }
+            }
+            .store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    self.stop()
+                    await self.kokoro.releaseResources()
+                }
             }
             .store(in: &subscriptions)
 
@@ -79,12 +112,20 @@ final class SpeechPlayer: NSObject, ObservableObject {
             statusMessage = "请选择中文或英文文字后点读。"
             return
         }
+        if engine == .kokoro {
+            speakOffline(trimmed)
+            return
+        }
         guard let voice = availableVoice(language: language) else {
             let name = language == "zh-CN" ? "中文" : "英文"
             statusMessage = "这台设备的\(name)声音暂不可用，请在系统设置中添加声音后重试。"
             return
         }
 
+        if synthesizer == nil {
+            synthesizer = AVSpeechSynthesizer()
+            synthesizer?.delegate = self
+        }
         let utterance = AVSpeechUtterance(string: trimmed)
         utterance.voice = voice
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate * Float(rate)
@@ -105,7 +146,7 @@ final class SpeechPlayer: NSObject, ObservableObject {
                 Task { @MainActor [weak self] in
                     guard let self, self.activeUtteranceID == expectedID, let utterance = self.pendingUtterance else { return }
                     self.pendingUtterance = nil
-                    self.synthesizer.speak(utterance)
+                    self.synthesizer?.speak(utterance)
                 }
             } catch {
                 Task { @MainActor [weak self] in
@@ -130,11 +171,19 @@ final class SpeechPlayer: NSObject, ObservableObject {
     }
 
     func stop() {
+        offlineRequestID = nil
+        offlineTask?.cancel()
+        offlineTask = nil
+        audioPlayer?.stop()
+        audioPlayer = nil
+        let completion = playbackCompletion
+        playbackCompletion = nil
+        completion?.resume(throwing: CancellationError())
         activeUtteranceID = nil
         pendingUtterance = nil
         preparationTimeout?.cancel()
         preparationTimeout = nil
-        synthesizer.stopSpeaking(at: .immediate)
+        synthesizer?.stopSpeaking(at: .immediate)
         isSpeaking = false
         isPaused = false
         hasStartedSpeech = false
@@ -143,12 +192,91 @@ final class SpeechPlayer: NSObject, ObservableObject {
     }
 
     func togglePause() {
+        if offlineRequestID != nil, isSpeaking {
+            isPaused.toggle()
+            if isPaused { audioPlayer?.pause() }
+            else { audioPlayer?.play() }
+            return
+        }
         guard activeUtteranceID != nil, isSpeaking else { return }
         if isPaused {
-            if synthesizer.continueSpeaking() { isPaused = false }
-        } else if synthesizer.pauseSpeaking(at: .immediate) {
+            if synthesizer?.continueSpeaking() == true { isPaused = false }
+        } else if synthesizer?.pauseSpeaking(at: .immediate) == true {
             isPaused = true
         }
+    }
+
+    private func speakOffline(_ text: String) {
+        let requestID = UUID()
+        offlineRequestID = requestID
+        let speed = rate
+        isSpeaking = true
+        statusMessage = "正在准备离线声音"
+        offlineTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let chunks = KokoroEngine.chunks(for: text)
+                for chunk in chunks {
+                    let result = try await kokoro.synthesize(text: chunk, speed: speed)
+                    try Task.checkCancellation()
+                    guard offlineRequestID == requestID else { throw CancellationError() }
+                    synthesisSummary = String(format: "准备 %.2f 秒 · 音频 %.1f 秒%@", result.elapsed, result.audio.duration, result.cached ? " · 已缓存" : "")
+                    let player = try await preparePlayer(result)
+                    try Task.checkCancellation()
+                    guard offlineRequestID == requestID else { throw CancellationError() }
+                    player.delegate = self
+                    audioPlayer = player
+                    statusMessage = nil
+                    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                        self.playbackCompletion = continuation
+                        // A pause requested during synthesis also applies to this new player.
+                        if !self.isPaused, !player.play() {
+                            self.playbackCompletion = nil
+                            continuation.resume(throwing: PlaybackError.failed)
+                        }
+                    }
+                    audioPlayer = nil
+                }
+                guard offlineRequestID == requestID else { return }
+                offlineRequestID = nil; offlineTask = nil
+                isSpeaking = false; isPaused = false; statusMessage = nil
+                deactivateAudioSession()
+            } catch is CancellationError {
+                // stop() owns state cleanup; an old request must never alter a new one.
+            } catch {
+                guard offlineRequestID == requestID else { return }
+                stop()
+                statusMessage = error.localizedDescription
+            }
+        }
+    }
+
+    private func preparePlayer(_ result: SynthesizedSpeech) async throws -> AVAudioPlayer {
+        try await withCheckedThrowingContinuation { continuation in
+            audioSessionQueue.async {
+                do {
+                    let session = AVAudioSession.sharedInstance()
+                    try session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
+                    try session.setActive(true)
+                    let player = try AVAudioPlayer(data: result.audio.wavData)
+                    guard player.prepareToPlay() else { throw PlaybackError.failed }
+                    continuation.resume(returning: player)
+                } catch { continuation.resume(throwing: error) }
+            }
+        }
+    }
+
+    private func finishedPlayback(id: ObjectIdentifier, success: Bool) {
+        guard let audioPlayer, ObjectIdentifier(audioPlayer) == id else { return }
+        let completion = playbackCompletion
+        playbackCompletion = nil
+        if success { completion?.resume() }
+        else { completion?.resume(throwing: PlaybackError.failed) }
+    }
+
+    private enum PlaybackError: LocalizedError {
+        case failed
+        var errorDescription: String? { "暂时无法播放声音，请稍后再试。" }
     }
 
     private func availableVoice(language: String) -> AVSpeechSynthesisVoice? {
@@ -237,5 +365,16 @@ extension SpeechPlayer: AVSpeechSynthesizerDelegate {
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance) {
         let id = ObjectIdentifier(utterance)
         Task { @MainActor [weak self] in self?.didPause(id: id, paused: false) }
+    }
+}
+
+extension SpeechPlayer: AVAudioPlayerDelegate {
+    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        let id = ObjectIdentifier(player)
+        Task { @MainActor [weak self] in self?.finishedPlayback(id: id, success: flag) }
+    }
+    nonisolated func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        let id = ObjectIdentifier(player)
+        Task { @MainActor [weak self] in self?.finishedPlayback(id: id, success: false) }
     }
 }

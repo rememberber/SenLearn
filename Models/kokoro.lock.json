@@ -1,0 +1,33 @@
+{
+  "model": "Kokoro-82M-v1.1-zh-int8",
+  "runtime": { "sherpaOnnx": "1.13.8", "onnxRuntime": "1.28.1", "provider": "cpu", "threads": 2 },
+  "voices": { "english": { "id": 0, "name": "af_maple" }, "chinese": { "id": 3, "name": "zf_001" } },
+  "voiceMapSource": "https://github.com/k2-fsa/sherpa-onnx/blob/v1.13.8/scripts/kokoro/v1.1-zh/generate_voices_bin.py",
+  "requiredFiles": ["model.int8.onnx", "voices.bin", "tokens.txt", "lexicon-us-en.txt", "lexicon-zh.txt", "date-zh.fst", "number-zh.fst", "phone-zh.fst", "dict/jieba.dict.utf8", "espeak-ng-data/phontab"],
+  "assets": [
+    {
+      "name": "kokoro-model",
+      "archive": "model.tar.bz2",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_1.tar.bz2",
+      "sha256": "a1e94694776049035c4f2c6529f003aaece993c76aae9a78995831c3c4dcafc6",
+      "extractedPath": "kokoro-int8-multi-lang-v1_1",
+      "destination": "Models/Kokoro"
+    },
+    {
+      "name": "sherpa-ios",
+      "archive": "sherpa.zip",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/xcframework/sherpa-onnx-v1.13.8-ios-static.xcframework.zip",
+      "sha256": "6b8e769cb153343270fdccbe92e3b3db0d1c421d67fa0989ab01fdf5b2fcf2de",
+      "extractedPath": "sherpa-onnx.xcframework",
+      "destination": "Packages/KokoroRuntime/Frameworks/sherpa-onnx.xcframework"
+    },
+    {
+      "name": "onnx-ios",
+      "archive": "ort.zip",
+      "url": "https://github.com/csukuangfj/onnxruntime-libs/releases/download/v1.28.1/onnxruntime-ios-static-xcframework-1.28.1.xcframework.zip",
+      "sha256": "992d8a0cc6014cccc3a7815c36bbff5e5a06833ea2c4d47dd43ef071f639cf9d",
+      "extractedPath": "onnxruntime.xcframework",
+      "destination": "Packages/KokoroRuntime/Frameworks/onnxruntime.xcframework"
+    }
+  ]
+}

@@ -6,6 +6,12 @@
 	objectVersion = 71;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0E270A9F9E240E4B910DC647 /* KokoroRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6BA5DADE9A109F776F73746D /* KokoroRuntime */; };
+		37DD2D596843BF75B1EEFCFA /* Models/Kokoro in Resources */ = {isa = PBXBuildFile; fileRef = B1C706D3CEE5825E29741DDF /* Models/Kokoro */; };
+		5283E652C876429C47590C2C /* KokoroRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6BA5DADE9A109F776F73746D /* KokoroRuntime */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		0D74AD2BF10D823329764523 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -26,6 +32,7 @@
 /* Begin PBXFileReference section */
 		65830ADE689123AA7D7B968A /* SenLearn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = SenLearn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8199FB39CF20B271C71FA75A /* SenLearnTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SenLearnTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1C706D3CEE5825E29741DDF /* Models/Kokoro */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Models/Kokoro; sourceTree = SOURCE_ROOT; };
 		E1F2521D281C39CC6888B910 /* SenLearnUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SenLearnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -47,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5283E652C876429C47590C2C /* KokoroRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E270A9F9E240E4B910DC647 /* KokoroRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +72,7 @@
 		2EB2D8158FC6EF9EB19CB439 = {
 			isa = PBXGroup;
 			children = (
+				B1C706D3CEE5825E29741DDF /* Models/Kokoro */,
 				A81E7C7ECD9FFB8299348812 /* SenLearn */,
 				BDD40CCD061EF8930D9EAAAB /* SenLearnTests */,
 				8E51681CFABF34224A13518E /* SenLearnUITests */,
@@ -100,6 +110,9 @@
 				BDD40CCD061EF8930D9EAAAB /* SenLearnTests */,
 			);
 			name = SenLearnTests;
+			packageProductDependencies = (
+				6BA5DADE9A109F776F73746D /* KokoroRuntime */,
+			);
 			productName = SenLearnTests;
 			productReference = 8199FB39CF20B271C71FA75A /* SenLearnTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -141,6 +154,9 @@
 				A81E7C7ECD9FFB8299348812 /* SenLearn */,
 			);
 			name = SenLearn;
+			packageProductDependencies = (
+				6BA5DADE9A109F776F73746D /* KokoroRuntime */,
+			);
 			productName = SenLearn;
 			productReference = 65830ADE689123AA7D7B968A /* SenLearn.app */;
 			productType = "com.apple.product-type.application";
@@ -164,6 +180,9 @@
 				Base,
 			);
 			mainGroup = 2EB2D8158FC6EF9EB19CB439;
+			packageReferences = (
+				399184189ECCA37D69FC6ED7 /* XCLocalSwiftPackageReference "Packages/KokoroRuntime" */,
+			);
 			productRefGroup = FE0A091FDBFB3E9C31B7A1BD /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -180,6 +199,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37DD2D596843BF75B1EEFCFA /* Models/Kokoro in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +472,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		399184189ECCA37D69FC6ED7 /* XCLocalSwiftPackageReference "Packages/KokoroRuntime" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/KokoroRuntime;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6BA5DADE9A109F776F73746D /* KokoroRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = KokoroRuntime;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F6F4DA8D93E88A08220E03B7 /* Project object */;
 }
