@@ -1,0 +1,34 @@
+# macOS / IDE user state
+.DS_Store
+._*
+.idea/
+.vscode/
+*.xcuserstate
+xcuserdata/
+
+# Xcode / Swift build output
+build/
+DerivedData/
+.build/
+.swiftpm/
+__pycache__/
+*.py[cod]
+*.xcarchive
+*.ipa
+*.dSYM/
+*.xcresult
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.p12
+*.mobileprovision
+
+# Optional web tooling
+node_modules/
+dist/
+
+# Local test output
+artifacts/
+*.log
