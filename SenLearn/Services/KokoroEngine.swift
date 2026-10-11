@@ -23,7 +23,7 @@ actor KokoroEngine {
         return requiredFiles.allSatisfy { FileManager.default.fileExists(atPath: directory.appendingPathComponent($0).path) }
     }
 
-    func synthesize(text: String, speed: Double) async throws -> SynthesizedSpeech {
+    func synthesize(text: String, speed: Double, style: SpeechVoiceStyle = .playful) async throws -> SynthesizedSpeech {
         let cancellation = KokoroCancellation()
         return try await withTaskCancellationHandler {
             try Task.checkCancellation()
@@ -34,14 +34,17 @@ actor KokoroEngine {
                 throw EngineError.missingModel
             }
             let speaker = Self.containsChinese(text) ? 3 : 0 // zf_001 / af_maple, pinned v1.1 voice map.
-            let key = "\(speaker)|\(speed)|\(text)"
+            let key = "\(speaker)|\(style.rawValue)|\(speed)|\(text)"
             if let index = cache.firstIndex(where: { $0.key == key }) {
                 let hit = cache.remove(at: index); cache.append(hit)
                 return SynthesizedSpeech(audio: hit.audio, elapsed: Date().timeIntervalSince(started), cached: true)
             }
             if session == nil { session = try KokoroSession(directory: directory) }
             try Task.checkCancellation()
-            let audio = try session!.generate(text: text, speaker: speaker, speed: Float(speed), cancellation: cancellation)
+            let original = try session!.generate(text: text, speaker: speaker, speed: Float(speed), cancellation: cancellation)
+            let adjusted = try SpeechPitchProcessor.process(original.samples, sampleRate: original.sampleRate,
+                                                           style: style, isCancelled: { cancellation.isCancelled })
+            let audio = KokoroAudio(samples: adjusted, sampleRate: original.sampleRate)
             try Task.checkCancellation()
             let cost = audio.samples.count * MemoryLayout<Float>.size
             if cost <= maximumCacheBytes {

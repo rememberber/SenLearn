@@ -29,6 +29,14 @@ final class SpeechPlayer: NSObject, ObservableObject {
             UserDefaults.standard.set(engine.rawValue, forKey: "speech.engine")
         }
     }
+    @Published var voiceStyle: SpeechVoiceStyle {
+        didSet {
+            guard oldValue != voiceStyle else { return }
+            stop()
+            synthesisSummary = nil
+            UserDefaults.standard.set(voiceStyle.rawValue, forKey: "speech.voiceStyle")
+        }
+    }
     @Published private(set) var synthesisSummary: String?
     private let kokoro = KokoroEngine()
     private var offlineTask: Task<Void, Never>?
@@ -64,6 +72,7 @@ final class SpeechPlayer: NSObject, ObservableObject {
     override init() {
         let savedRate = UserDefaults.standard.object(forKey: "speech.rate") as? Double ?? 0.8
         engine = SpeechEngine(rawValue: UserDefaults.standard.string(forKey: "speech.engine") ?? "") ?? .kokoro
+        voiceStyle = SpeechVoiceStyle(rawValue: UserDefaults.standard.string(forKey: "speech.voiceStyle") ?? "") ?? .playful
         rate = savedRate.isFinite ? min(max(savedRate, 0.5), 1.2) : 0.8
         super.init()
 
@@ -210,6 +219,7 @@ final class SpeechPlayer: NSObject, ObservableObject {
         let requestID = UUID()
         offlineRequestID = requestID
         let speed = rate
+        let style = voiceStyle
         isSpeaking = true
         statusMessage = "正在准备离线声音"
         offlineTask = Task { @MainActor [weak self] in
@@ -217,7 +227,7 @@ final class SpeechPlayer: NSObject, ObservableObject {
             do {
                 let chunks = KokoroEngine.chunks(for: text)
                 for chunk in chunks {
-                    let result = try await kokoro.synthesize(text: chunk, speed: speed)
+                    let result = try await kokoro.synthesize(text: chunk, speed: speed, style: style)
                     try Task.checkCancellation()
                     guard offlineRequestID == requestID else { throw CancellationError() }
                     synthesisSummary = String(format: "准备 %.2f 秒 · 音频 %.1f 秒%@", result.elapsed, result.audio.duration, result.cached ? " · 已缓存" : "")

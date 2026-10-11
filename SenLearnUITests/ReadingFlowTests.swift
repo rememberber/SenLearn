@@ -147,11 +147,16 @@ final class ReadingFlowTests: XCTestCase {
         for _ in 0..<6 where !chinese.isHittable { scroll.swipeUp() }
         XCTAssertTrue(chinese.isHittable)
         XCTAssertTrue(app.staticTexts["中文和英文声音已随应用安装，可直接离线朗读。"].exists)
+        let styles = app.segmentedControls["settings.voiceStyle"]
+        XCTAssertTrue(styles.buttons["童趣女声"].exists)
+        styles.buttons["童趣女声"].tap()
         chinese.tap()
         XCTAssertTrue(app.staticTexts["settings.synthesisSummary"].waitForExistence(timeout: 40))
         capture("kokoro-settings", app)
         if app.buttons["停止试听"].exists { app.buttons["停止试听"].tap() }
         app.buttons["settings.testEnglish"].tap()
+        styles.buttons["清亮女声"].tap()
+        XCTAssertFalse(app.buttons["停止试听"].exists, "Changing style must stop the previous preview.")
         app.segmentedControls["settings.speechEngine"].buttons["系统声音"].tap()
         XCTAssertFalse(app.buttons["停止试听"].exists)
         app.segmentedControls["settings.speechEngine"].buttons["Kokoro 离线声音"].tap()
@@ -162,6 +167,8 @@ final class ReadingFlowTests: XCTestCase {
         app.buttons["library.settings"].tap()
         for _ in 0..<6 where !chinese.isHittable { scroll.swipeUp() }
         XCTAssertTrue(app.staticTexts["中文和英文声音已随应用安装，可直接离线朗读。"].exists)
+        XCTAssertTrue(app.staticTexts["声音稍亮一些，轻快清晰。"].exists)
+        app.segmentedControls["settings.voiceStyle"].buttons["童趣女声"].tap()
     }
 
     @MainActor

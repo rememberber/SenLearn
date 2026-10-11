@@ -148,6 +148,13 @@ struct SettingsView: View {
                 Picker("朗读方式", selection: $speech.engine) {
                     ForEach(SpeechEngine.allCases) { engine in Text(engine.name).tag(engine) }
                 }.pickerStyle(.segmented).accessibilityIdentifier("settings.speechEngine")
+                if speech.engine == .kokoro {
+                    Picker("声音风格", selection: $speech.voiceStyle) {
+                        ForEach(SpeechVoiceStyle.allCases) { style in Text(style.name).tag(style) }
+                    }.pickerStyle(.segmented).accessibilityIdentifier("settings.voiceStyle")
+                    Text(speech.voiceStyle.detail)
+                        .font(.footnote).foregroundStyle(theme.ink.opacity(0.72))
+                }
                 Text(speech.voiceAvailabilitySummary)
                     .font(.subheadline)
                 Text(speech.engine == .kokoro ? "中文与英文随文字自动切换。声音在本机生成，无需下载或联网。" : "使用设备提供的声音；可用声音取决于系统配置。")
