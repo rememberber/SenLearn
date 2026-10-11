@@ -1,4 +1,4 @@
-# SenLearn
+# SenLearn（森学）
 ## 命名故事
 森是我妻子的名字，这个软件是她驱使我做的，刚好SenLearn有神乐/神了的谐音，所以就叫SenLearn了。
 ## 设计理念

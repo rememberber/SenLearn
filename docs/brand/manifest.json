@@ -1,0 +1,250 @@
+{
+  "brand": "森学 · SenLearn",
+  "date": "2026-10-11",
+  "boardId": "a66d5431-c5ef-4f11-966e-01629342d41f",
+  "source": "../手绘图标素材.heic",
+  "source_sha256": "f009a5da0658800ef2e9f5c32f930f0570719a328084d3f739673e5b24445da0",
+  "route": "Source-derived deterministic vector artwork; no AI raster generation",
+  "preserved": [
+    "two asymmetric crown tiers",
+    "left-offset apex",
+    "green crown",
+    "thin brown trunk"
+  ],
+  "adapted": [
+    "trunk shortened for small-size recognition",
+    "contour simplified and softly smoothed",
+    "five subtle vector pencil strokes",
+    "warm paper app-icon background"
+  ],
+  "palette": {
+    "tree": "#167454",
+    "trunk": "#B9784D",
+    "paper": "#F7F5ED",
+    "ink": "#243B32"
+  },
+  "wordmarks": {
+    "en": {
+      "font": "AvenirNext-DemiBold",
+      "size": 94,
+      "text": "SenLearn",
+      "width": 402.978
+    },
+    "zh": {
+      "font": "HiraginoSansGB-W6",
+      "size": 170,
+      "text": "森学",
+      "width": 340
+    }
+  },
+  "exports": [
+    {
+      "svg": "svg/daughter-tree-trace.svg",
+      "sha256": "42de5599bdb2a4289ffddfed728a397c6d6edca6d7f151a118909b485aa4454f"
+    },
+    {
+      "svg": "svg/senlearn-app-icon-dark.svg",
+      "sha256": "d50c540fb4cbc82eab6bffc7e10613bd531fcb1849d824f3f9f80ce2ea0aa5c9"
+    },
+    {
+      "svg": "svg/senlearn-app-icon.svg",
+      "sha256": "f6e9daa556ba6a0ebae17d2209454fff78b27652bd1a947af49fb3b22019914c"
+    },
+    {
+      "svg": "svg/senlearn-logo-horizontal.svg",
+      "sha256": "f8b5823f7d4a9c80345a491643d3d822c3657189327cef5bbf1f065a42eba388"
+    },
+    {
+      "svg": "svg/senlearn-logo-monochrome.svg",
+      "sha256": "bba1c6f78eae19db370044384fff5343ca42ab59f75860e0743abfe6bbd97b9d"
+    },
+    {
+      "svg": "svg/senlearn-logo-reverse.svg",
+      "sha256": "632e9e89f3d7921a752d543df56f5f227817466088e3d5ab1e04c51f3bfec77b"
+    },
+    {
+      "svg": "svg/senlearn-logo-stacked.svg",
+      "sha256": "fcad4cc425621ef4a2d32f1223b895df420047be6242100274f0e14f7f6b5ab1"
+    },
+    {
+      "svg": "svg/senlearn-mark-monochrome.svg",
+      "sha256": "9e2ce4a4d4559200f5dc391bf165dbdbd00ce58d910f9a3e1899b37a9b725b3d"
+    },
+    {
+      "svg": "svg/senlearn-mark-small.svg",
+      "sha256": "3ca1742abee6b62a8ca7b4050fa0f2c79d1b12f3ea997442cd523775fc52e7f1"
+    },
+    {
+      "svg": "svg/senlearn-mark.svg",
+      "sha256": "9a1aeb1d26b329e74fd8c6704ddd56389413ceebb83ce4deedad0ad4cd624920"
+    }
+  ],
+  "raster_exports": [
+    {
+      "png": "png/daughter-tree-trace@2x.png",
+      "pixels": [
+        1600,
+        2160
+      ],
+      "sha256": "5e61fed17dd22b2810c30ff3e5d0ea54aa2dd57bd2319fb65ebef8a19c1fa845"
+    },
+    {
+      "png": "png/senlearn-app-icon-1024.png",
+      "pixels": [
+        1024,
+        1024
+      ],
+      "sha256": "aa934bf5d9e803ce11f8158b2f426baaa3b54528ca013567a220fc68d4a5ff8b"
+    },
+    {
+      "png": "png/senlearn-app-icon-120.png",
+      "pixels": [
+        120,
+        120
+      ],
+      "sha256": "02cd09ee22894a6eab8f272a7e8c3339424fe1ff37e4f3fc07c45b5b75aca618"
+    },
+    {
+      "png": "png/senlearn-app-icon-180.png",
+      "pixels": [
+        180,
+        180
+      ],
+      "sha256": "73d8c6da908215af946cc2c957e2a80bed2d0802febdafd0125dfa464897fb6f"
+    },
+    {
+      "png": "png/senlearn-app-icon-32.png",
+      "pixels": [
+        32,
+        32
+      ],
+      "sha256": "18779a1cf6838a442f478a51f65e5ce0fb9677eddf2f4a9079d47a3fbe78783d"
+    },
+    {
+      "png": "png/senlearn-app-icon-40.png",
+      "pixels": [
+        40,
+        40
+      ],
+      "sha256": "0d1f0ab0a7f0e9493837473aaa5f477c5b479d24290797d4dc008552b6af3695"
+    },
+    {
+      "png": "png/senlearn-app-icon-512.png",
+      "pixels": [
+        512,
+        512
+      ],
+      "sha256": "9b15580201fb53a8f642ab5b00726064febc73dc0a7c85d5c623dd4b9efaf408"
+    },
+    {
+      "png": "png/senlearn-app-icon-60.png",
+      "pixels": [
+        60,
+        60
+      ],
+      "sha256": "99acacbb1c54a00a5c006eeaabfc181fe5a0085d192bd03d2159ca0ac5e8ebfa"
+    },
+    {
+      "png": "png/senlearn-app-icon-dark-1024.png",
+      "pixels": [
+        1024,
+        1024
+      ],
+      "sha256": "a6c07fe7207459ca755df644559cedf72b1ecb71714ac361a44a6858e9e0a0ac"
+    },
+    {
+      "png": "png/senlearn-app-icon-dark@2x.png",
+      "pixels": [
+        2048,
+        2048
+      ],
+      "sha256": "db55c0643dee31a419b90357086f505e9b0be920c255825150552c7b44cea560"
+    },
+    {
+      "png": "png/senlearn-app-icon@2x.png",
+      "pixels": [
+        2048,
+        2048
+      ],
+      "sha256": "bcbca02f10d57fc8b7b58cc6bee989d2457f909f41ecf9cb6ac41de07b1adffb"
+    },
+    {
+      "png": "png/senlearn-logo-horizontal@2x.png",
+      "pixels": [
+        2240,
+        920
+      ],
+      "sha256": "752c1bc235aa2cd7d3fc8ced51f40b10b4a43665008d981f80693be4af79645f"
+    },
+    {
+      "png": "png/senlearn-logo-monochrome-preview.png",
+      "pixels": [
+        1120,
+        460
+      ],
+      "sha256": "2b9063fd2bd039d309292f285bb4c612f3940d6b6200d7472693f191ad8e24ba"
+    },
+    {
+      "png": "png/senlearn-logo-monochrome@2x.png",
+      "pixels": [
+        2240,
+        920
+      ],
+      "sha256": "3023d96d768c0479a4779dd1a77ca738e6866f28cf96c513b8dabf19d4c549db"
+    },
+    {
+      "png": "png/senlearn-logo-preview.png",
+      "pixels": [
+        1120,
+        460
+      ],
+      "sha256": "94cae15b8b8a341bbe5c449b61bed3dab15006638a8a34e640cece59322eb4d9"
+    },
+    {
+      "png": "png/senlearn-logo-reverse@2x.png",
+      "pixels": [
+        2240,
+        920
+      ],
+      "sha256": "b1360055ea54e03e4462520721cb4145ec1786107eb989896f9b5ab89149e24e"
+    },
+    {
+      "png": "png/senlearn-logo-stacked@2x.png",
+      "pixels": [
+        1600,
+        2240
+      ],
+      "sha256": "93cb242df5d31ccf4a8964f5fb40405e5fa3ee1cabddb15051e2fa06d36b55f6"
+    },
+    {
+      "png": "png/senlearn-mark-monochrome@2x.png",
+      "pixels": [
+        1600,
+        1660
+      ],
+      "sha256": "4912203879fc49245cdc3062b053fec72def199160de5ac4cf7623b680270b37"
+    },
+    {
+      "png": "png/senlearn-mark-small@2x.png",
+      "pixels": [
+        1600,
+        1660
+      ],
+      "sha256": "128998b136a3058246a815ece35bb5b77a30cd88b587bd7ce6abb31859681932"
+    },
+    {
+      "png": "png/senlearn-mark@2x.png",
+      "pixels": [
+        1600,
+        1660
+      ],
+      "sha256": "5f1e6bfbdefc1da188bf1366a162af863bcf1f7d54880dca8eec164e1b49258a"
+    }
+  ],
+  "validation": {
+    "svg_paths_only": 10,
+    "app_icon": "1024x1024 RGB; both catalog files exactly match exports",
+    "asset_compilation": "xcrun actool succeeded for iPhone and iPad, deployment target iOS 17.0",
+    "xcode_configs": "AppIcon enabled for Debug and Release; generator updated"
+  }
+}

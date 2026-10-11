@@ -56,6 +56,7 @@ for name in targets:
         settings += f'PRODUCT_BUNDLE_IDENTIFIER = com.senlearn.{"app" if name == "SenLearn" else name.lower()};'
         if name == 'SenLearn':
             settings += 'INFOPLIST_FILE = Config/Info.plist; GENERATE_INFOPLIST_FILE = NO; OTHER_LDFLAGS = "$(inherited) -lsqlite3";'
+            settings += 'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;'
         else:
             settings += 'GENERATE_INFOPLIST_FILE = YES;'
             if name.endswith('UITests'):

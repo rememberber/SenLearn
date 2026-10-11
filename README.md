@@ -51,6 +51,7 @@ xcodebuild -project SenLearn.xcodeproj -scheme SenLearn \
 
 - [产品概念](docs/DesignConcept.md)
 - [UI / UE 规则](docs/ui-ux/设计说明.md)
+- [图标与品牌 logo（SVG / PNG）](docs/brand/README.md)
 - [工程决策与后续验收](docs/Development.md)
 - [Kokoro 接入与验证](docs/Kokoro.md)
 
